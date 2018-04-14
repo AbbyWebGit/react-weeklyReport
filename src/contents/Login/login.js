@@ -3,6 +3,7 @@ import {Layout} from 'antd';
 import { withRouter} from 'react-router-dom'
 import {Icon, Form, Input, Button, Checkbox} from 'antd';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
 import '../../index.css';
 import './login.scss';
@@ -35,6 +36,7 @@ class NormalLoginForm extends React.Component {
       });
   }
   login() {
+    // console.log('111111111111111')
     var value = this.props.form.getFieldsValue()
     let _this = this
     axios.defaults.headers = {
@@ -50,10 +52,12 @@ class NormalLoginForm extends React.Component {
       },
       // withCredentials:true
     }).then(function (response) {
-    if(response.status==200){
-    // console.log(response.status);
+    if(response.data.status==200){
+      console.info(response);
       _this.props.history.push('/index')
-    }
+    }else{
+      console.info(response.data.msg);
+    } 
   })
     .catch(function (error) {
       console.log(error)
@@ -117,7 +121,11 @@ class NormalLoginForm extends React.Component {
     );
   }
 }
+NormalLoginForm.PropTypes = {
+  cotext
+}
 const WrappedNormalLoginForm = Form.create()(withRouter(NormalLoginForm));
+
 
 class Login extends Component {
 

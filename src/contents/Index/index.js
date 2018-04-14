@@ -32,7 +32,8 @@ class Index extends Component {
         }, {
           title: '终止日期',
           dataIndex: 'enddate',
-          key: 'enddate'
+          key: 'enddate',
+          render: text=>text+'hh'
         }, {
           title: '操作',
           key: 'action',
@@ -41,9 +42,9 @@ class Index extends Component {
 
               <a
                 href="#"
-                onClick={this.getDelete.bind(this)}>删除</a>
+                onClick={this.getDelete.bind(this,record._id.$oid)}>删除</a>
               <span className="ant-divider"/>
-              <a href="#">查看</a>
+              <a href={"/index?v="+record._id.$oid}>查看</a>
               <span className="ant-divider"/>
               <a href="#">编辑</a>
 
@@ -70,7 +71,9 @@ class Index extends Component {
       var res = JSON.parse(response.data.data)
       // _this.data=res.mes
       console.log(res.mes[0]._id.$oid);
-      _this.setState({data: res.mes})
+      _this.setState({data: res.mes.map((v,i)=>{
+        return {...v,key:i}
+      })})
 
     })
       .catch(function (error) {
@@ -100,7 +103,8 @@ class Index extends Component {
       });
   }
   // 删除
-  getDelete() {
+  getDelete(id) {
+    // console.info(record)
     axios.defaults.headers = {
       'Content-Type': 'application/json',
       //'Content-Type': 'application/x-www-form-urlencoded'
@@ -108,7 +112,7 @@ class Index extends Component {
     axios({method: 'delete', 
     url: 'http://10.52.66.106:5678/weekly_reports', 
     data: {
-
+      _id:id
     }}).then(function (response) {
       console.log("chenggong")
 
