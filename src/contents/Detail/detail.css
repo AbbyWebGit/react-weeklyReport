@@ -1,19 +1,12 @@
-.detail{
-    height: 100%;
-}
-.detail .mesWarp{
-    width: 100%;
-    padding: 50px 50px 50px 0px;
-    background: #fff;
-    margin: 70px auto;
-    border-radius: 15px;
-    -webkit-box-shadow: 0px 0px 20px #888;
-    box-shadow: 0px 0px 20px #888;
-}
+.mesWarp{
 
-.detail .ant-input{
+    padding: 50px 50px 50px 0px;
+  }
+  
+  .mesWarp .ant-input{
     width: 500px;
-}
-.detail .ant-btn{
+  }
+  .mesWarp .ant-btn{
     margin-right: 50px;
-}
+  }
+  

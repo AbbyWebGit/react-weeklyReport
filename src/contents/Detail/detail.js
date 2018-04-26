@@ -4,89 +4,105 @@ import {
   Input,
   Button,
   DatePicker,
-
-
 } from 'antd';
-import {Layout} from 'antd';
+
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+
+import {Link} from 'react-router-dom'
+import {addWeekly,getWeekly,editWeekly} from '../../api/api'
+import {getCookie} from '../../utils/cookie';
 import '../../index.css';
 import './detail.css';
-import {Link} from 'react-router-dom'
-const {Header, Footer, Content} = Layout;
 const FormItem = Form.Item;
 const {TextArea} = Input;
-// const Option = Select.Option;
+// const {WeekPicker } = DatePicker;
 
-// const AutoCompleteOption = AutoComplete.Option;
+class Detail extends Component {
+  //构造函数
+  constructor(props) {
+    super(props)
+    var _status = '';
+    switch(this.props.match.path){
+      case '/editor/:id':
+        _status = "edit";
+        this.getWeeklyDetail(this.props.match.params.id)
+        break;
+      case '/detail/:id':
+        _status = "detail";
+        this.getWeeklyDetail(this.props.match.params.id)
+        break;
+      case '/add':
+       _status = "add"
+        break;
+      default:
+        console.log('default');
+    }
 
-// const residences = [{
-//   value: 'zhejiang',
-//   label: 'Zhejiang',
-//   children: [{
-//     value: 'hangzhou',
-//     label: 'Hangzhou',
-//     children: [{
-//       value: 'xihu',
-//       label: 'West Lake',
-//     }],
-//   }],
-// }, {
-//   value: 'jiangsu',
-//   label: 'Jiangsu',
-//   children: [{
-//     value: 'nanjing',
-//     label: 'Nanjing',
-//     children: [{
-//       value: 'zhonghuamen',
-//       label: 'Zhong Hua Men',
-//     }],
-//   }],
-// }];
+    this.state = {
+      confirmDirty: false,
+      pageStatus:_status,
+    }
+  }
 
-class RegistrationForm extends React.Component {
-  state = {
-    confirmDirty: false,
-    autoCompleteResult: [],
-  };
+  getWeeklyDetail = (id) => {
+    getWeekly({
+      _id : id
+    }).then((res)=>{
+      var _res = JSON.parse(res.data)
+      //console.log(res);
+      //console.log(this.props.form)
+      var setFieldsValue = this.props.form.setFieldsValue;
+      setFieldsValue({
+        startdate:moment(_res.startdate),
+        enddate:moment(_res.enddate),
+        content:_res.content,
+      })
+      
+    })
+  }
+  setWeeklyDetail = (params) => {
+    editWeekly(params).then((res) => {
+      console.log(res);
+    })
+    console.log("bianji")
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
+    var _this = this;
     this.props.form.validateFieldsAndScroll((err, values) => {
+      //console.log(values)
+      
       if (!err) {
-        console.log('Received values of form: ', values);
+        values.startdate = values.startdate.format('YYYY/MM/DD')
+        values.enddate = values.enddate.format('YYYY/MM/DD')
+        values.userid = getCookie('userid');
+        values.chinesename= getCookie('chinesename');
+        //console.log(values)
+       
+        if(this.state.pageStatus === 'edit'){
+          values._id = this.props.match.params.id
+          console.log(111);
+          editWeekly(values).then((res) => {
+            if(res.status === 200){
+              _this.props.history.push('/index')
+             }
+          })
+        }else{
+          addWeekly(values).then((res)=>{
+            console.log(values)
+            if(res.status === 200){
+              _this.props.history.push('/index')
+             }
+          })
+
+        }
       }
     });
   }
-  handleConfirmBlur = (e) => {
-    const value = e.target.value;
-    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
-  }
-  compareToFirstPassword = (rule, value, callback) => {
-    const form = this.props.form;
-    if (value && value !== form.getFieldValue('password')) {
-      callback('Two passwords that you enter is inconsistent!');
-    } else {
-      callback();
-    }
-  }
-  validateToNextPassword = (rule, value, callback) => {
-    const form = this.props.form;
-    if (value && this.state.confirmDirty) {
-      form.validateFields(['confirm'], { force: true });
-    }
-    callback();
-  }
-  handleWebsiteChange = (value) => {
-    let autoCompleteResult;
-    if (!value) {
-      autoCompleteResult = [];
-    } else {
-      autoCompleteResult = ['.com', '.org', '.net'].map(domain => `${value}${domain}`);
-    }
-    this.setState({ autoCompleteResult });
-  }
   render() {
     const { getFieldDecorator } = this.props.form;
-    // const { autoCompleteResult } = this.state;
-
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -109,99 +125,52 @@ class RegistrationForm extends React.Component {
         },
       },
     };
-   
+    moment.locale('zh-cn');
+    let benTemp = ''
+    if(this.state.pageStatus !== 'detail'){
+      benTemp = <FormItem {...tailFormItemLayout}>
+      <Button type="primary" htmlType="submit" onClick={this.submit} >提交</Button>
+      <Button><Link to={{pathname: "/index"}}>返回</Link></Button>
+    </FormItem>
+    }else{
+      benTemp = <FormItem {...tailFormItemLayout}>
+    
+      <Button><Link to={{pathname: "/index"}}>返回</Link></Button>
+    </FormItem>
+    }
 
     return (
+      <div className='mesWarp'>
       <Form onSubmit={this.handleSubmit}>
-        
-       
-        <FormItem
-          {...formItemLayout}
-          label="开始时间"
-        >
-          {getFieldDecorator('start', {
+        <FormItem {...formItemLayout} label="开始时间">
+          {getFieldDecorator('startdate', {
             rules: [{ required: true, message: '请输入周报开始时间' }],
           })(
-            <DatePicker />
+            // <WeekPicker placeholder="Select Week" />
+            <DatePicker disabled={this.state.pageStatus === 'detail'} />
           )}
         </FormItem>
-       
-       
-        <FormItem
-        {...formItemLayout}
-        label="结束时间">
-
-          {getFieldDecorator('end', {
+        <FormItem {...formItemLayout} label="结束时间">
+          {getFieldDecorator('enddate', {
             rules: [{ required: true, message: '请输入周报结束时间' }],
           })(
-            <DatePicker />
+            <DatePicker disabled={this.state.pageStatus === 'detail'} />
           )}
         </FormItem>
-      
-
-        <FormItem
-          {...formItemLayout}
-          label="周报内容"
-        >
+        <FormItem {...formItemLayout} label="周报内容">
           {getFieldDecorator('content', {
             rules: [ {
               required: true, message: '请输入周报',
             }],
           })(
-            <TextArea rows={10} />
+            <TextArea rows={10}  disabled={this.state.pageStatus === 'detail'}/>
           )}
         </FormItem>
-        <FormItem {...tailFormItemLayout}>
-          <Button type="primary" htmlType="submit" ><Link to={{pathname: "/index"}}> 提交</Link></Button>
-          <Button>取消</Button>
-        </FormItem>
+        {benTemp}
       </Form>
-    );
-  }
-}
-
-const WrappedRegistrationForm = Form.create()(RegistrationForm);
-
-
-
-
-
-
-
-
-
-
-class User extends Component {
-
-  render() {
-
-    return (
-      <div className="detail">
-        <Layout>
-
-          <Header className='clearfix'>
-            <span className='logo'></span>
-            <div className='loginMes'>
-              <span className="loginName">张静</span>
-              <span className='exit'>退出</span>
-            </div>
-
-          </Header>
-          <Content>
-            <div className='contentWarp'>
-            <div className='mesWarp'>
-            <WrappedRegistrationForm />
-            </div>
-
-            </div>
-
-          </Content>
-          <Footer>京ICP备17016764号-1京网文【2017】2380-251 2017-2018 猎户星空版权所有</Footer>
-        </Layout>
-
       </div>
     );
   }
 }
 
-export default User
+export default Form.create()(Detail)

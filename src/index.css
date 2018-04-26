@@ -191,6 +191,7 @@ body {
 .loginMes .exit{
   color:#dedede;
   margin: 0 14px;
+  cursor: pointer;
 }
 .ant-menu-horizontal{
   background: #f5f6f7;
@@ -205,3 +206,4 @@ body {
     color: #9da1b2;
    
 }
+

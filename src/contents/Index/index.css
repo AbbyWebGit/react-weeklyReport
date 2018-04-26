@@ -1,18 +1,17 @@
 .contentWarp {
-    width: 1200px;
-    margin: 0 auto;
-    position: relative;
+    border-radius: 15px;
+    width: 1290px;
+    padding: 50px 40px;
+    background: #fff;
+    margin: 20px auto;
+    -moz-box-shadow: 0px 5px 5px #888;
+    /* 老的 Firefox */
+    box-shadow: 0px 5px 5px #888;
 }
 
 .table {
-    width: 100%;
-    padding: 50px 40px;
-    background: #fff;
-    margin: 50px auto;
-    border-radius: 15px;
-    -moz-box-shadow: 10px 10px 5px #888888;
-    /* 老的 Firefox */
-    box-shadow: 0px 0px 20px #888;
+    width:1200px;
+    margin:0 auto;
 }
 
 .index,
@@ -32,7 +31,7 @@ td {
     margin: 20px auto 0;
 }
 
-.index .addBtn .ant-btn-primary {
+/* .index .addBtn .ant-btn-primary {
     background-color: #e77499;
     border-color: #e77499;
     border-radius: 16px;
@@ -42,7 +41,7 @@ td {
     background-color: #f28e8e;
     border-color: #f28e8e;
    
-}
+} */
 
 .addBtn {
     position: absolute;

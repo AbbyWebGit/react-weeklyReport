@@ -1,13 +1,15 @@
 import React, {Component} from 'react';
 import {Layout} from 'antd';
 import { withRouter} from 'react-router-dom'
-import {Icon, Form, Input, Button, Checkbox} from 'antd';
+import {Icon, Form, Input, Button, Checkbox,message} from 'antd';
 import axios from 'axios';
-import PropTypes from 'prop-types';
+import {setCookie} from '../../utils/cookie';
+import {login} from '../../api/api'
+// import PropTypes from 'prop-types';
 
 import '../../index.css';
-import './login.scss';
-axios.defaults.withCredentials=true;
+import './login.css';
+
 
 const {Header, Footer, Content} = Layout;
 const FormItem = Form.Item;
@@ -35,28 +37,23 @@ class NormalLoginForm extends React.Component {
         }
       });
   }
+
   login() {
-    // console.log('111111111111111')
+// 获取表格的全部数据
     var value = this.props.form.getFieldsValue()
     let _this = this
-    axios.defaults.headers = {
-      'Content-Type': 'application/json',
-      //'Content-Type': 'application/x-www-form-urlencoded'
-    }
-    axios({
-      method: 'post',
-      url: 'http://10.52.66.106:5678/login',
-      data:{
-        user: value.userName,
-        password: value.password
-      },
-      // withCredentials:true
-    }).then(function (response) {
-    if(response.data.status==200){
-      console.info(response);
+    // axios请求
+    login({
+      user: value.userName,
+      password: value.password
+    }).then(function (res) {
+    if(res.status===200){
+       console.info(11);
+      setCookie('userid',res.data.userid);
+      setCookie('chinesename',res.data.resname || '');
       _this.props.history.push('/index')
     }else{
-      console.info(response.data.msg);
+      message.error(res.msg+'，用户名或密码错误');
     } 
   })
     .catch(function (error) {
@@ -99,13 +96,13 @@ class NormalLoginForm extends React.Component {
           )}
         </FormItem>
         <FormItem>
-          {getFieldDecorator('remember', {
+          {/* {getFieldDecorator('remember', {
             valuePropName: 'checked',
             initialValue: true
           })(
             <Checkbox>记住密码</Checkbox>
-          )}
-          <a className="login-form-forgot">忘记密码</a>
+          )} */}
+          {/* <a className="login-form-forgot">忘记密码</a> */}
           <Button
             type="primary"
             htmlType="submit"
@@ -121,9 +118,7 @@ class NormalLoginForm extends React.Component {
     );
   }
 }
-NormalLoginForm.PropTypes = {
-  cotext
-}
+
 const WrappedNormalLoginForm = Form.create()(withRouter(NormalLoginForm));
 
 
@@ -141,32 +136,15 @@ class Login extends Component {
 
   }
 
-  componentDidMount() {
-
-    axios.defaults.headers = {
-      'Content-Type': 'application/json',
-      //'Content-Type': 'application/x-www-form-urlencoded'
-    }
-
-    // axios({
-    //     method: 'post',
-    //     url: 'http://10.100.25.143:5678/login',
-    //     data: {
-    //       user: "zhangjing@ainirobot.com",
-    //       password: "123456"
-    //     }
-    //   }).then(function (response) {
-    //   console.log(response);
-    // })
-    //   .catch(function (error) {
-    //     console.log(error)
-    //   });
-
-  }
+  
 
   render() {
 
     return (
+      message.config({
+        top: 150,
+        duration: 2,
+      }),
       <div className="login">
 
         <Layout>
