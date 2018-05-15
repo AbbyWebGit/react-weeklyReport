@@ -73,12 +73,12 @@ class Detail extends Component {
     var _this = this;
     this.props.form.validateFieldsAndScroll((err, values) => {
       //console.log(values)
-      
+      values.startdate = values.startdate.format('YYYY/MM/DD')
+      values.enddate = values.enddate.format('YYYY/MM/DD')
       if (!err) {
-        values.startdate = values.startdate.format('YYYY/MM/DD')
-        values.enddate = values.enddate.format('YYYY/MM/DD')
-        values.userid = getCookie('userid');
-        values.chinesename= getCookie('chinesename');
+       
+        values.userid = getCookie('uid');
+        values.chinesename= getCookie('cname');
         //console.log(values)
        
         if(this.state.pageStatus === 'edit'){
@@ -147,14 +147,14 @@ class Detail extends Component {
             rules: [{ required: true, message: '请输入周报开始时间' }],
           })(
             // <WeekPicker placeholder="Select Week" />
-            <DatePicker disabled={this.state.pageStatus === 'detail'} />
+            <DatePicker disabled={this.state.pageStatus === 'detail' }  placeholder="周报开始时间"/>
           )}
         </FormItem>
         <FormItem {...formItemLayout} label="结束时间">
           {getFieldDecorator('enddate', {
             rules: [{ required: true, message: '请输入周报结束时间' }],
           })(
-            <DatePicker disabled={this.state.pageStatus === 'detail'} />
+            <DatePicker disabled={this.state.pageStatus === 'detail'}  placeholder="周报结束时间"/>
           )}
         </FormItem>
         <FormItem {...formItemLayout} label="周报内容">

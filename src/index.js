@@ -12,7 +12,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
     <Route
       {...rest}
       render={props =>
-        getCookie('userid') ? (
+        getCookie('uid') ? (
           <Component {...props} />
         ) : (
           <Redirect

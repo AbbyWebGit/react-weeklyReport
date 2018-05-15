@@ -24,7 +24,7 @@ class Index extends Component {
       pageSize:10,
       totalnum:0,
       tabStatus:'all',   
-      userID:getCookie('userid')||'',
+      userID:getCookie('uid')||'',
       deleteStyle:{
         display:"none",
       },
@@ -74,7 +74,7 @@ class Index extends Component {
     }
     getWeekly(_data).then((res)=>{
       var _res = JSON.parse(res.data)
-      console.log(_res);
+      // console.log(_res);
       _this.setState({data: _res.mes.map((v,i)=>{
         return {...v,key:i}
       }),
@@ -127,6 +127,8 @@ class Index extends Component {
         })
     }
   }
+  // 修改页码
+  
   handlePageChange = (page,pageSize) => {
     this.setState({
       pagenum:page

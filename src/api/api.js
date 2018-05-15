@@ -3,6 +3,13 @@ import axios from '../utils/http'
 export function login(data){
     return axios.post("http://10.102.4.37:5678/login",data)
 }
+// 退出
+export function logout(){
+    return axios({
+        url: 'http://10.102.4.37:5678/logout',
+        method: 'get',
+      });
+}
 //获取周报
 export function getWeekly(params){
     return axios.get("http://10.102.4.37:5678/weekly_reports",{

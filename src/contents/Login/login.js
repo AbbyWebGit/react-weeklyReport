@@ -48,10 +48,11 @@ class NormalLoginForm extends React.Component {
       password: value.password
     }).then(function (res) {
     if(res.status===200){
-       console.info(11);
-      setCookie('userid',res.data.userid);
-      setCookie('chinesename',res.data.resname || '');
+      //  console.info(res);
+      setCookie('uid',res.data.userid);
+      setCookie('cname',res.data.resname || '');
       _this.props.history.push('/index')
+        // console.log(_this.props.history);
     }else{
       message.error(res.msg+'，用户名或密码错误');
     } 
@@ -77,7 +78,7 @@ class NormalLoginForm extends React.Component {
           })(
             <Input
               prefix={< Icon type = "user" style = {{ fontSize: 13 }}/>}
-              placeholder="Username"/>
+              placeholder="请输入用户名"/>
           )}
         </FormItem>
         <FormItem>
@@ -92,7 +93,7 @@ class NormalLoginForm extends React.Component {
             <Input
               prefix={< Icon type = "lock" style = {{ fontSize: 13 }}/>}
               type="password"
-              placeholder="Password"/>
+              placeholder="请输入密码"/>
           )}
         </FormItem>
         <FormItem>
